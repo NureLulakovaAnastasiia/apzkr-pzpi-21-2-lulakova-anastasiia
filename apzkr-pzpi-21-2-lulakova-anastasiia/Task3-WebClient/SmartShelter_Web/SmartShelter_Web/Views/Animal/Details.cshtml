@@ -1,0 +1,370 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model SmartShelter_Web.Models.ViewModel.AnimalDetailsVM
+
+<div class="row justify-content-start">
+    <a class="btn btn-info col-1 m-3" asp-action="Index" asp-controller="Animal">@localizer["Back"]</a>
+</div>
+<div class="row justify-content-center">
+    <div class=" card col-5 m-3 p-3">
+        <form method="post" asp-action="UpdateAnimal" asp-controller="Animal">
+            <input type="hidden" asp-for="Animal.Id" />
+            <input type="hidden" asp-for="Animal.AcceptanceDate" />
+            <div class="row pb-2 text-center">
+                <h2 class="text-primary">@localizer["EditAnimal"]</h2>
+                <hr />
+            </div>
+            <div class="mb-3 row p-1">
+                <label class="p-0  pb-2" asp-for="@Model.Animal.Name">@localizer["Name"]</label>
+                <input asp-for="@Model.Animal.Name" class="form-control" />
+                <span asp-validation-for="@Model.Animal.Name" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="mb-3 col-9 p-1">
+                    <label class="p-0  pb-2" asp-for="@Model.Animal.Breed">@localizer["Breed"]</label>
+                    <input asp-for="@Model.Animal.Breed" class="form-control" />
+                    <span asp-validation-for="@Model.Animal.Breed" class="text-danger"></span>
+                </div>
+                <div class="mb-3 col-3 p-1">
+                    <label class="p-0  pb-2" asp-for="@Model.Animal.Gender">@localizer["Gender"]</label>
+                    <input asp-for="@Model.Animal.Gender" class="form-control" />
+                    <span asp-validation-for="@Model.Animal.Gender" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col-3 p-1">
+                    <label class="p-0  pb-2" asp-for="@Model.Animal.Weight">@localizer["Weight"]</label>
+                    <input asp-for="@Model.Animal.Weight" class="form-control" />
+                    <span asp-validation-for="@Model.Animal.Weight" class="text-danger"></span>
+                </div>
+                <div class="mb-3 col-9 p-1">
+                    <label class="p-0  pb-2" asp-for="Animal.AcceptanceDate">@localizer["AccDate"]</label>
+                    <input asp-for="Animal.AcceptanceDate" class="form-control" disabled />
+                    <span asp-validation-for="Animal.AcceptanceDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="mb-3 col-9 p-1">
+                <label class="p-0  pb-2" asp-for="@Model.Animal.DOB">@localizer["DOB"]</label>
+                <input asp-for="@Model.Animal.DOB" class="form-control" />
+                <span asp-validation-for="@Model.Animal.DOB" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-success">@localizer["Save"]</button>
+        </form>
+
+    </div>
+    <div class="card col-6 m-3 text-center">
+        <h3 class="text-primary m-3">@localizer["Meals"]</h3>
+        @if (Model.Meals.Count == 0)
+        {
+            <div class="m-3 ">
+                <h4>@localizer["NoMeals"]</h4>
+            </div>
+        }
+        else
+        {
+            <form method="post" asp-action="UpdateMealplan">
+                <table class="table table-bordered table-responsive text-center mb-2">
+                    <thead>
+                    <th>@localizer["Name"]</th>
+                    <th>@localizer["Amount"]</th>
+                    <th>@localizer["Time"]</th>
+                    <th>@localizer["Actions"]</th>
+                    </thead>
+                    <tbody>
+                        <input hidden asp-for="@Model.Animal.Id" />
+                        @for (int i = 0; i < Model.Meals.Count; i++)
+                        {
+                            <tr>
+                                <input hidden asp-for="@Model.Meals[i].Id" />
+                                <input hidden asp-for="@Model.Meals[i].AnimalId" />
+                                <td><input asp-for="@Model.Meals[i].Name" class="form-control border-0" /></td>
+                                <td><input asp-for="@Model.Meals[i].Amount" class="form-control border-0" /></td>
+                                <td><input type="time" asp-for="@Model.Meals[i].Time" class="form-control border-0" /></td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a asp-route-mealId="@Model.Meals[i].Id" asp-route-animalId="@Model.Meals[i].AnimalId" asp-action="DeleteMeal" class="btn btn-outline-danger">
+                                            @localizer["Delete"]
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <div class="row justify-content-end ">
+                    <button type="submit" class="btn btn-warning mb-3 me-3 col-2 ">@localizer["Save"]</button>
+                </div>
+            </form>
+
+        }
+        @if (Model.Meals.Count < 10)
+        {
+            <div class="card p-3 ">
+                <div class="card-title"><h5>@localizer["AddMeal"]</h5></div>
+                <form method="post" asp-action="AddMeal" asp-controller="Animal">
+                    <input hidden asp-for="@Model.NewMealPlan.AnimalId" />
+                    <div class="row">
+                        <div class="col-5">
+                            <label class="p-0 pb-2 " asp-for="@Model.NewMealPlan.Name">@localizer["Name"]</label>
+                            <input asp-for="@Model.NewMealPlan.Name" class="form-control" />
+                        </div>
+                        <div class="col-2">
+                            <label class="p-0 pb-2 " asp-for="@Model.NewMealPlan.Amount">@localizer["Amount"]</label>
+                            <input asp-for="@Model.NewMealPlan.Amount" class="form-control" />
+                        </div>
+                        <div class="col-3">
+                            <label class="p-0 pb-2" asp-for="@Model.NewMealPlan">@localizer["Time"]</label>
+                            <input type="time" asp-for="@Model.NewMealPlan.Time" class="form-control" />
+                        </div>
+                        <div class="col-2 align-content-center">
+                            <button type="submit" class="btn btn-success">@localizer["Submit"]</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        }
+    </div>
+</div>
+<div class="row justify-content-center">
+    <div class="card col-5 m-3 text-center">
+        <h3 class="text-primary m-3">@localizer["Aviary"] @(Model.Aviary.Id != 0 ? $"№{Model.Aviary.Id}" : " ") </h3>
+        <hr />
+        <div class="card m-3 p-2">
+            <div class="card-body">
+                @if (Model.Aviary.Id != 0)
+                {
+                    <div class="row justify-content-end">
+                        <a class="btn btn-info col-3"  asp-route-aviaryId="@Model.Aviary.Id"
+                        asp-route-animalId="@Model.Animal.Id" asp-controller="Sensor" asp-action="Index">@localizer["SensorData"]</a>
+                    </div>
+                    <form method="post" asp-action="UpdateAviary">
+                        <input hidden asp-for="@Model.Aviary.Id" />
+                        <input hidden asp-for="@Model.Aviary.AnimalId" />
+                        @if (Model.Aviary.Description != null)
+                        {
+                            <div class="mb-3 row p-1">
+                                <label class="p-0  pb-2" asp-for="@Model.Aviary.Description">@localizer["Description"]</label>
+                                <textarea asp-for="@Model.Aviary.Description" class="form-control"></textarea>
+                                <span asp-validation-for="@Model.Aviary.Description" class="text-danger"></span>
+                                <hr />
+                            </div>
+                        }
+                        <div class="row justify-content-center">
+                            <input hidden asp-for="@Model.Aviary.AviaryConditionId" value="@(Model.Aviary.AviaryConditionId != null ? Model.Aviary.AviaryConditionId : 0)">
+                            <div class="mb-3 col-7 p-1">
+                                <label class="p-0  pb-2" asp-for="@Model.AviaryCondition.MinWater">@localizer["MinWater"]</label>
+                                <input asp-for="@Model.AviaryCondition.MinWater" class="form-control" />
+                                <span asp-validation-for="@Model.AviaryCondition.MinWater" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-3 col-6 p-1">
+                                <label class="p-0  pb-2" asp-for="@Model.AviaryCondition.MinTemperature">@localizer["MinTemp"]</label>
+                                <input asp-for="@Model.AviaryCondition.MinTemperature" class="form-control" />
+                                <span asp-validation-for="@Model.AviaryCondition.MinTemperature" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3 col-6 p-1">
+                                <label class="p-0  pb-2" asp-for="@Model.AviaryCondition.MaxTemperature">@localizer["MaxTemp"]</label>
+                                <input asp-for="@Model.AviaryCondition.MaxTemperature" class="form-control" />
+                                <span asp-validation-for="@Model.AviaryCondition.MaxTemperature" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="mb-3 col-6 p-1">
+                                <label class="p-0  pb-2" asp-for="@Model.AviaryCondition.MinHumidity">@localizer["MinHum"]</label>
+                                <input asp-for="@Model.AviaryCondition.MinHumidity" class="form-control" />
+                                <span asp-validation-for="@Model.AviaryCondition.MinHumidity" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3 col-6 p-1">
+                                <label class="p-0  pb-2" asp-for="@Model.AviaryCondition.MaxHumidity">@localizer["MaxHum"]</label>
+                                <input asp-for="@Model.AviaryCondition.MaxHumidity" class="form-control" />
+                                <span asp-validation-for="@Model.AviaryCondition.MaxHumidity" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div> <button type="submit" class="btn btn-success">@localizer["Save"]</button></div>
+                    </form>
+                }
+                else
+                {
+                    <h4>@localizer["NoAviary"]</h4>
+                }
+            </div>
+        </div>
+        <div class="card m-3 justify-content-center">
+            <h4 class="m-3">@localizer["ChangeAviary"]</h4>
+            @if (Model.FreeAviaries.Count > 0)
+            {
+                <form method="post" asp-action="ChangeAviary">
+                    <div class="row ">
+
+                        <label class="p-0  pb-2">@localizer["SelectAviary"]</label>
+                    </div>
+                    <div class="row col-10 m-3">
+                        <select class="form-select" name="selectedAviary">
+                            @foreach (var id in Model.FreeAviaries)
+                            {
+                                var item = new SelectListItem { Value = $"{id}", Text = $"{id}" };
+                                <option value="@item.Value">@item.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <input hidden asp-for="@Model.Animal.Id" name="animalId" />
+                    <button type="submit" class="btn btn-success m-3">@localizer["Choose"]</button>
+                </form>
+            }
+            else
+            {
+                <h5 class="m-3">@localizer["NoAviary"]</h5>
+            }
+        </div>
+    </div>
+    <div class="card col-6 m-3 text-center">
+        <h3 class="text-primary m-3">@localizer["OtherTreatments"]</h3>
+        <a class="btn btn-success col-3 m-2 align-self-end" asp-action="CreateTreatment" asp-controller="Treatment"
+        asp-route-animalId="@Model.Animal.Id">@localizer["AddTreatment"]</a>
+        <hr />
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>@localizer["Type"]</th>
+                    <th>@localizer["Date"]</th>
+                    <th>@localizer["ExpDate"]</th>
+                    <th>@localizer["Notes"]</th>
+                    <th>@localizer["StaffName"]</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var treatment in Model.Treatments)
+                {
+                    <tr>
+                        <td>@treatment.Treatment.Type</td>
+                        <td>@treatment.Treatment.Date.ToString("d")</td>
+                        <td>@(treatment.Treatment.ExpirationDate != null ? treatment.Treatment.ExpirationDate.Value.Date : " ")</td>
+                        <td>@treatment.Treatment.Notes</td>
+                        <td>@treatment.StaffName</td>
+                        <td>
+                            <div class="btn-group">
+
+                                @if (treatment.Treatment.ExpirationDate > DateTime.Now || treatment.Treatment.ExpirationDate == null)
+                                {
+                                    <a class="btn btn-info"
+                                       asp-action="Supplies" asp-controller="Treatment"
+                                       asp-route-treatmentId="@treatment.Treatment.Id" asp-route-isClosed="@false">@localizer["Supplies"]</a>
+                                    <a class="btn btn-outline-danger" asp-action="DeleteTreatment" asp-controller="Treatment"
+                                       asp-route-treatmentId="@treatment.Treatment.Id"
+                                       asp-route-animalId="@treatment.Treatment.AnimalId">@localizer["Delete"]</a>
+                                }
+                                else
+                                {
+                                    <a class="btn btn-info"
+                                       asp-action="Supplies" asp-controller="Treatment"
+                                       asp-route-treatmentId="@treatment.Treatment.Id" asp-route-isClosed="@true">@localizer["Supplies"]</a>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="card col-12 m-3 text-center p-2">
+
+    <h3 class="text-primary m-3">@localizer["Diseases"]</h3>
+    @if (Model.Diseases.Count == 0)
+    {
+        <div class="m-3 ">
+            <h4>@localizer["NoDiseases"]</h4>
+        </div>
+    }
+    else
+    {
+        <form method="post" asp-action="UpdateDiseases">
+            <table class="table table-bordered  table-responsive text-center">
+                <thead>
+                <th>@localizer["Name"]</th>
+                <th>@localizer["Start"]</th>
+                <th>@localizer["End"]</th>
+                <th>@localizer["Symptoms"]</th>
+                <th>@localizer["Actions"]</th>
+                </thead>
+                <tbody>
+                    <input hidden asp-for="@Model.Animal.Id" />
+                    @for (int i = 0; i < Model.Diseases.Count; i++)
+                    {
+                        <tr>
+                            <input hidden asp-for="@Model.Diseases[i].Id" />
+                            <input hidden asp-for="@Model.Diseases[i].AnimalId" />
+                            @if (Model.Diseases[i].EndDate != null)
+                            {
+                                <td class="col-1"><input asp-for="@Model.Diseases[i].Name" class="form-control border-0" readonly /></td>
+                                <td class="col-2"><input type="date" asp-for="@Model.Diseases[i].StartDate" readonly class="form-control border-0" /></td>
+                                <td class="col-2">
+                                    <input type="date" asp-for="@Model.Diseases[i].EndDate" readonly class="form-control border-0" />
+                                </td>
+                                <td class="col-5"><textarea asp-for="@Model.Diseases[i].Symptoms" readonly class="form-control border-0 disabled"> </textarea></td>
+                            }
+                            else
+                            {
+                                <td class="col-1"><input asp-for="@Model.Diseases[i].Name" class="form-control border-0" /></td>
+                                <td class="col-2"><input type="date" asp-for="@Model.Diseases[i].StartDate" class="form-control border-0" /></td>
+                                <td class="col-2">
+                                    <input type="date" asp-for="@Model.Diseases[i].EndDate"
+                                           class="form-control border-0" />
+                                </td>
+                                <td class="col-5"><textarea asp-for="@Model.Diseases[i].Symptoms" class="form-control border-0"> </textarea></td>
+                            }
+
+                            <td class="col-2 align-items-baseline">
+                                <div class="btn-group ">
+                                    <a asp-route-diseaseId="@Model.Diseases[i].Id" asp-route-isClosed="@(Model.Diseases[i].EndDate != null)" 
+                                    asp-action="DiseaseTreatments" asp-controller="Treatment" class="btn btn-outline-danger">
+                                        @localizer["Treatments"]
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="row justify-content-end ">
+                <button type="submit" class="btn btn-warning mb-3 me-3 col-2 "> @localizer["Save"]</button>
+            </div>
+        </form>
+    }
+    <div class="card p-3 ">
+        <div class="card-title"><h5>@localizer["AddDisease"]</h5></div>
+        <form method="post" asp-action="AddDisease" asp-controller="Animal">
+            <input hidden asp-for="@Model.NewDisease.AnimalId" />
+            <div class="row">
+                <div class="col-9">
+                    <label class="p-0 pb-2 " asp-for="@Model.NewDisease.Name"> @localizer["Name"]</label>
+                    <input asp-for="@Model.NewDisease.Name" class="form-control" />
+                </div>
+                <div class="col-3">
+                    <label class="p-0 pb-2 " asp-for="@Model.NewDisease.StartDate"> @localizer["Start"]</label>
+                    <input type="date" asp-for="@Model.NewDisease.StartDate" class="form-control" />
+                </div>
+            </div>
+            <div class="row align-items-center mt-3">
+                <div class="col-10">
+                    <label class="p-0 pb-2" asp-for="@Model.NewDisease.Symptoms"> @localizer["Symptoms"]</label>
+                    <textarea asp-for="@Model.NewDisease.Symptoms" class="form-control"></textarea>
+                </div>
+                <div class="col-2">
+                    <button type="submit" class="btn btn-success"> @localizer["Save"]</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+

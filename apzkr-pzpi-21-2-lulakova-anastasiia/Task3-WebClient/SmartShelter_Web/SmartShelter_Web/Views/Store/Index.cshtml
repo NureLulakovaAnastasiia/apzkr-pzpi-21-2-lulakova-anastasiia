@@ -1,0 +1,191 @@
+﻿@using SmartShelter_Web.Models.ViewModel;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer;
+
+@model StorageVM
+
+<div class="row col-12 m-0 justify-content-center text-center">
+    <div class="card col-11 m-2">
+        <div class="card-title mt-2">
+            <h3>@localizer["AllStorage"]</h3>
+            <hr />
+        </div>
+        <div class="card-body">
+            <table class="table table-light">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">@localizer["Type"]</th>
+                        <th scope="col">@localizer["Name"]</th>
+                        <th scope="col">@localizer["Amount"]</th>
+                        <th scope="col">@localizer["UOM"]</th>
+                        <th scope="col">@localizer["Price"]</th>
+                        <th scope="col">@localizer["Date"]</th>
+                        <th scope="col">@localizer["Staff"]</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    @foreach (var item in Model.FullList.Where(x => x.Amount > 0))
+                    {
+                        <tr>
+                            <th scope="row">@item.Id</th>
+                            <th>@item.Type</th>
+                            <th>@item.Name</th>
+                            <td>@Math.Round(item.Amount, 3)</td>
+                            <td>@item.UnitOfMeasure</td>
+                            <td>@item.Price</td>
+                            <td>@item.Date</td>
+                            <td>@item.StaffId</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="row text-center justify-content-center">
+    <div class="card col-5 m-2">
+        <div class="card-title mt-2">
+            <h3>@localizer["Available Products"]</h3>
+            <hr />
+        </div>
+        <div class="card-body">
+            <table class="table table-light">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">@localizer["Type"]</th>
+                        <th scope="col">@localizer["Name"]</th>
+                        <th scope="col">@localizer["Amount"]</th>
+                        <th scope="col">@localizer["UOM"]</th>
+                        <th scope="col">@localizer["Price"]</th>
+
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    @foreach (var item in Model.GroupedList)
+                    {
+                        <tr>
+                            <th scope="row">@item.Id</th>
+                            <th>@item.Type</th>
+                            <th>@item.Name</th>
+                            <td>@Math.Round(item.Amount, 3)</td>
+                            <td>@item.UnitOfMeasure</td>
+                            <td>@item.Price</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card col-6 m-2">
+        <div class="card-title mt-2">
+            <h3>@localizer["CreateOrder"]</h3>
+            <hr />
+        </div>
+        <div class="card-body">
+        <form method="post" asp-action="CreateOrder">
+            <div class="row">
+                <div class="mb-3 col-5 p-1">
+                    <label class="p-0  pb-2" asp-for="@Model.NewOrder.Type">@localizer["Type"]</label>
+                    <input asp-for="@Model.NewOrder.Type" class="form-control" />
+                    <span asp-validation-for="@Model.NewOrder.Type" class="text-danger"></span>
+                </div>
+                <div class="mb-3 col-5 p-1">
+                        <label class="p-0  pb-2" asp-for="@Model.NewOrder.Name">@localizer["Name"]</label>
+                    <input asp-for="@Model.NewOrder.Name" class="form-control" />
+                    <span asp-validation-for="@Model.NewOrder.Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col-3 p-1">
+                        <label class="p-0  pb-2" asp-for="@Model.NewOrder.Amount">@localizer["Amount"]</label>
+                    <input asp-for="@Model.NewOrder.Amount" class="form-control" />
+                    <span asp-validation-for="@Model.NewOrder.Amount" class="text-danger"></span>
+                </div>
+                <div class="mb-3 col-4 p-1">
+                        <label class="p-0  pb-2" asp-for="@Model.NewOrder.UnitOfMeasure">@localizer["UOM"]</label>
+                    <input asp-for="@Model.NewOrder.UnitOfMeasure" class="form-control" />
+                    <span asp-validation-for="@Model.NewOrder.UnitOfMeasure" class="text-danger"></span>
+                </div>
+                <div class="mb-3 col-4 p-1">
+                        <label class="p-0  pb-2" asp-for="@Model.NewOrder.Price">@localizer["Price"]</label>
+                    <input asp-for="@Model.NewOrder.Price" class="form-control" />
+                    <span asp-validation-for="@Model.NewOrder.Price" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="mb-3 col-8 p-1">
+                        <label class="p-0  pb-2" asp-for="@Model.NewOrder.EndDate">@localizer["EndDate"]</label>
+                    <input asp-for="@Model.NewOrder.EndDate" class="form-control" />
+                    <span asp-validation-for="@Model.NewOrder.EndDate" class="text-danger"></span>
+                </div>
+                <input hidden asp-for="@Model.NewOrder.OrderDate" value="@DateTime.Now" />
+                <button type="submit" class="btn btn-success col-3 m-3 p-0">@localizer["Create"]</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+<div class="row text-center justify-content-center">
+    <div class="card col-11 m-2">
+        <div class="card-title mt-2">
+            <h3>@localizer["AllOrders"]</h3>
+            <hr />
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-light">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">@localizer["Type"]</th>
+                        <th scope="col">@localizer["Name"]</th>
+                        <th scope="col">@localizer["Amount"]</th>
+                        <th scope="col">@localizer["UOM"]</th>
+                        <th scope="col">@localizer["Price"]</th>
+                        <th scope="col">@localizer["Date"]</th>
+                        <th scope="col">@localizer["Approved"]</th>
+                        @if(GlobalVariables.isAdmin)
+                        {
+                            <th scope="col">@localizer["Actions"]</th>
+
+                        }
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                    @foreach (var item in Model.Orders)
+                    {
+                        <tr>
+                            <th>@item.Id</th>
+                            <th>@item.Type</th>
+                            <th>@item.Name</th>
+                            <td>@item.Amount</td>
+                            <td>@item.UnitOfMeasure</td>
+                            <td>@item.Price</td>
+                            <td>@item.OrderDate</td>
+                            <td>
+                                @(item.IsApproved ? localizer["yes"] : localizer["no"])
+                            </td>
+                            @if (GlobalVariables.isAdmin )
+                            {
+                                if (!item.IsApproved)
+                                {
+                                    <td>
+                                        <a class="btn btn-warning" asp-action="ApproveOrder" asp-route-orderId="@item.Id">@localizer["Approve"]</a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                               
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

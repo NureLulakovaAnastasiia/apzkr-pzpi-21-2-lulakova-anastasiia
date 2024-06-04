@@ -1,0 +1,35 @@
+﻿@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer;
+
+@model SmartShelter_Web.Models.ViewModel.LoginModel
+@{
+    Layout = "~/Views/_AuthLayout.cshtml";
+}
+
+
+
+<div class="row">
+    <div class="col-12">
+        <form id="registerForm" asp-action="Register" method="post">
+            <h2>@localizer["CreateNewAccount"]</h2>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+            <div class=" mb-3">
+                <label asp-for="@Model.Username">@localizer["Email"]</label>
+                <input asp-for="@Model.Username" class="form-control"  />
+                <span asp-validation-for="@Model.Username" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="@Model.Password">@localizer["Password"]</label>
+                <input type="password" asp-for="@Model.Password" class="form-control" />
+                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            </div>
+            
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">@localizer["Register"]</button>
+        </form>
+    </div>
+    
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

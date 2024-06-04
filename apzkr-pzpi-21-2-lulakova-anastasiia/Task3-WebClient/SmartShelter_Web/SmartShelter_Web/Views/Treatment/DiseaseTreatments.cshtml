@@ -1,0 +1,69 @@
+﻿@using SmartShelter_Web.Models.ViewModel;
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer;
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model DiseaseTreatmentsVM
+
+<div class="row justify-content-end">
+    @if (!Model.isClosed)
+    {
+        <a class="btn btn-info col-2 m-2" asp-action="CreateTreatment" asp-controller="Treatment"
+           asp-route-animalId="@Model.Disease.AnimalId" asp-route-diseaseId="@Model.Disease.Id">@localizer["AddTreatment"]</a>
+
+    }
+</div>
+<div class="row text-center">
+    <div class="card ">
+        <div class="card-body">
+            <h3 class="text-primary">@Model.Disease.Name @localizer["Treatments"]</h3>
+            <hr />
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>@localizer["Type"]</th>
+                        <th>@localizer["Date"]</th>
+                        <th>@localizer["ExpDate"]</th>
+                        <th>@localizer["Notes"]</th>
+                        <th>@localizer["StaffName"]</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var treatment in Model.Treatments)
+                    {
+                        <tr>
+                            <td>@treatment.Treatment.Type</td>
+                            <td>@treatment.Treatment.Date.Date</td>
+                            <td>@(treatment.Treatment.ExpirationDate != null ? treatment.Treatment.ExpirationDate : " ")</td>
+                            <td>@treatment.Treatment.Notes</td>
+                            <td>@treatment.StaffName</td>
+                            <td>
+                                <div class="btn-group">
+                                   
+                                    @if (!Model.isClosed)
+                                    {
+                                        <a class="btn btn-info"
+                                           asp-action="Supplies" asp-controller="Treatment"
+                                           asp-route-treatmentId="@treatment.Treatment.Id" asp-route-isClosed="@false">@localizer["Supplies"]</a>
+                                        <a class="btn btn-outline-danger" asp-action="DeleteTreatment"
+                                           asp-route-treatmentId="@treatment.Treatment.Id" 
+                                        asp-route-animalId="@treatment.Treatment.AnimalId">@localizer["Delete"]</a>
+                                    }else{
+
+                                    
+                                    <a class="btn btn-info"
+                                       asp-action="Supplies" asp-controller="Treatment"
+                                       asp-route-treatmentId="@treatment.Treatment.Id" asp-route-isClosed="@true">@localizer["Supplies"]</a>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
