@@ -13,6 +13,7 @@ namespace SmartShelter_Web.Controllers
     public class TreatmentController : Controller
     {
         private readonly ITokenService _tokenService;
+        public string error = "";
         public TreatmentController(ITokenService tokenService)
         {
             _tokenService = tokenService;
@@ -34,7 +35,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    error = ex.Message;
                 }
                 return vm;
             }
@@ -121,7 +122,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    error = ex.Message;
                 }
             }
            
@@ -149,7 +150,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    error = ex.Message;
                 }
             }
 
@@ -261,7 +262,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    error = ex.Message;
                 }
             }
 
@@ -272,10 +273,7 @@ namespace SmartShelter_Web.Controllers
             var client = _tokenService.CreateHttpClient();
             string fullUrl = $"{GlobalVariables.backendAddress}/treatment/delete/{treatmentId}";
             HttpResponseMessage response = await client.DeleteAsync(fullUrl);
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
+             
             return RedirectToAction("Details", "Animal", new { animalId = animalId });
 
         }
@@ -285,10 +283,7 @@ namespace SmartShelter_Web.Controllers
             var client = _tokenService.CreateHttpClient();
             string fullUrl = $"{GlobalVariables.backendAddress}/supply/delete/{supplyId}";
             HttpResponseMessage response = await client.DeleteAsync(fullUrl);
-            if (response.IsSuccessStatusCode)
-            {
-
-            }
+             
             return RedirectToAction("Supplies", new { treatmentId = treatmentId, isClosed = false });
         }
     }

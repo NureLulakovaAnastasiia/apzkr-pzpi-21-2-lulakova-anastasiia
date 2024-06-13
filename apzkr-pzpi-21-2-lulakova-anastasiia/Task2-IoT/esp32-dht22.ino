@@ -9,8 +9,6 @@
 
 
 
-#define EEPROM_SIZE 30
-
 int loopIteration = 0;
 String SSID = "Wokwi-GUEST";
 String Password = "";
@@ -24,7 +22,10 @@ const int DHT_PIN_Hum = 18;
 const int NTC_PIN = 39;
 const int FOOD_PIN = 35;
 const int WATER_PIN = 34;
-
+const float tempKoef = 0.72;
+const float humidKoef = 0.5;
+const float tempHumKoef = 0.002;
+const float ihsKoef = 40.6;
 
 float humidity = 0;
 float temperature = 0;
@@ -162,7 +163,7 @@ void sendPostRequest() {
 
 
 float calculateIHS(){
-  float res = (0.72 * temperature) + (0.5 * humidity) - (0.002 * temperature * humidity) + 40.6;
+  float res = (tempKoef * temperature) + (humidKoef * humidity) - (tempHumKoef * temperature * humidity) + ihsKoef;
   return res;
 }
 

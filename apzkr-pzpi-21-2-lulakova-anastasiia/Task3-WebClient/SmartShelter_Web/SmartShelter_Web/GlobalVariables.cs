@@ -14,7 +14,7 @@ namespace SmartShelter_Web
             get
             {
                 return GlobalVariables.role != String.Empty && GlobalVariables.role == "Admin";
-                //return true;
+                
             }
         }
     }

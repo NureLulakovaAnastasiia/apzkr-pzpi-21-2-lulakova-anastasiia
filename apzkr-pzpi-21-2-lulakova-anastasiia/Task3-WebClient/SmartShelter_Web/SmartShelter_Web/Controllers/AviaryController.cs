@@ -9,7 +9,7 @@ namespace SmartShelter_Web.Controllers
     public class AviaryController : Controller
     {
         private readonly ITokenService _tokenService;
-
+        public string error = "";
         public AviaryController(ITokenService tokenService)
         {
             _tokenService = tokenService;
@@ -18,6 +18,7 @@ namespace SmartShelter_Web.Controllers
         public async Task<IActionResult> Aviaries()
         {
             var aviaries = await GetAllAviaries();
+            ViewData["error"] = error;
             return View( aviaries);
         }
 
@@ -39,10 +40,6 @@ namespace SmartShelter_Web.Controllers
             string fullUrl = $"{GlobalVariables.backendAddress}/api/Aviary/{aviaryId}";
             HttpResponseMessage response = await client.DeleteAsync(fullUrl);
 
-            if (response.IsSuccessStatusCode)
-            {
-               
-            }
             return RedirectToAction("Aviaries");
         }
 
@@ -89,7 +86,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    error = ex.Message;
                 }
             }
 

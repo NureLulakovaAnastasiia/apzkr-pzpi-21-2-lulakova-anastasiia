@@ -6,6 +6,7 @@ using SmartShelter_Web.Middleware;
 using SmartShelter_Web.Models;
 using SmartShelter_Web.Models.ViewModel;
 using System.Text.Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SmartShelter_Web.Controllers
 {
@@ -67,10 +68,7 @@ namespace SmartShelter_Web.Controllers
             string json = JsonSerializer.Serialize(sensor, options);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(fullUrl, content);
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
+             
             return RedirectToAction("Index", new { animalId = animalId, aviaryId = aviaryId });
 
         }
@@ -111,11 +109,6 @@ namespace SmartShelter_Web.Controllers
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(fullUrl, content);
 
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
-
             return RedirectToAction("Index", new { animalId = vm.AnimalId, aviaryId = vm.Sensor.AviaryId });
         
         }
@@ -125,10 +118,7 @@ namespace SmartShelter_Web.Controllers
             var client = _tokenService.CreateHttpClient();
             string fullUrl = $"{GlobalVariables.backendAddress}/sensor/{sensorId}";
             HttpResponseMessage response = await client.DeleteAsync(fullUrl);
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
+            
             return RedirectToAction("Index", new { animalId = animalId, aviaryId = aviaryId });
 
         }
@@ -161,16 +151,12 @@ namespace SmartShelter_Web.Controllers
             {
                 model.Temperatures.Add(data.Temperature);
                 model.Humidities.Add(data.Humidity);
-                //model.DewPoints.Add(data.DewPoint);
-                //model.AbsHumidities.Add(data.AbsoluteHumidity);
                 model.Dates.Add(data.Date);
             }
             var currentCulture = System.Globalization.CultureInfo.CurrentCulture;
             var isCelsius = currentCulture.Name != "en-US";
             List<LineSeriesData> tempData = new List<LineSeriesData>();
             List<LineSeriesData> humidData = new List<LineSeriesData>();
-            //List<LineSeriesData> dewpointData = new List<LineSeriesData>();
-            //List<LineSeriesData> absHumData = new List<LineSeriesData>();
             if (!isCelsius)
             {
                 model.Temperatures.ForEach(p => tempData.Add(new LineSeriesData
@@ -178,10 +164,6 @@ namespace SmartShelter_Web.Controllers
                     Y = Math.Round(p * 1.8 + 32, 2)
                 }));
 
-                //model.DewPoints.ForEach(p => dewpointData.Add(new LineSeriesData
-                //{
-                //    Y = Math.Round(p * 1.8 + 32, 2)
-                //}));
             }
             else
             {
@@ -190,20 +172,12 @@ namespace SmartShelter_Web.Controllers
                     Y = p
                 }));
 
-                //model.DewPoints.ForEach(p => dewpointData.Add(new LineSeriesData
-                //{
-                //    Y = p
-                //}));
             }
 
             model.Humidities.ForEach(p => humidData.Add(new LineSeriesData
             {
                 Y = p
             }));
-            //model.AbsHumidities.ForEach(p => absHumData.Add(new LineSeriesData
-            //{
-            //    Y = p
-            //}));
             TimeZoneInfo localTimeZone = TimeZoneInfo.Local;
             List<string> chDates = new List<string>();
             if (isCelsius)
@@ -241,11 +215,8 @@ namespace SmartShelter_Web.Controllers
 
             ViewData["tempData"] = tempData;
             ViewData["humidData"] = humidData;
-            //ViewData["dewpointData"] = dewpointData;
-            //ViewData["absHumData"] = absHumData;
             ViewData["dates"] = chDates;
             ViewData["sensorId"] = sensorId;
-            //ViewData["plantName"] = plantName;
             return View();
         }
 

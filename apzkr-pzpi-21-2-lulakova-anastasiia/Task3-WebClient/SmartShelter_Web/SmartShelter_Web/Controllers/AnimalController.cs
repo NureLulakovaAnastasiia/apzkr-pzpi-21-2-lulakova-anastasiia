@@ -13,6 +13,7 @@ namespace SmartShelter_Web.Controllers
     public class AnimalController : Controller
     {
         private readonly ITokenService _tokenService;
+        public string error = "";
         public AnimalController(ITokenService tokenService)
         {
             _tokenService = tokenService;
@@ -20,6 +21,7 @@ namespace SmartShelter_Web.Controllers
         public async Task<IActionResult> Index()
         {
             var animals = await GetAnimals();
+            ViewData["error"] = error;
             return View(animals);
         }
 
@@ -36,6 +38,7 @@ namespace SmartShelter_Web.Controllers
             var freeAviaries = await GetFreeAviaries();
             var diseases = await GetAnimalDiseases(animalId);
             var treatments = await GetTreatments(animalId);
+            ViewData["error"] = error;
             return View(new AnimalDetailsVM
             {
                 Animal = animal,
@@ -71,7 +74,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-                   
+                   error = ex.Message;
                 }
             }
 
@@ -91,11 +94,6 @@ namespace SmartShelter_Web.Controllers
             string json = JsonSerializer.Serialize(animal, options);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(fullUrl, content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
 
             return RedirectToAction("Details", new { animalId = animal.Id });
         }
@@ -192,10 +190,6 @@ namespace SmartShelter_Web.Controllers
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(fullUrl, content);
 
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
 
             return RedirectToAction("Details", new { animalId = vm.Animal.Id });
         }
@@ -205,10 +199,7 @@ namespace SmartShelter_Web.Controllers
             var client = _tokenService.CreateHttpClient();
             string fullUrl = $"{GlobalVariables.backendAddress}/api/Meals/?id={mealId}";
             HttpResponseMessage response = await client.DeleteAsync(fullUrl);
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
+            
             return RedirectToAction("Details", new { animalId = animalId });
         }
 
@@ -233,7 +224,7 @@ namespace SmartShelter_Web.Controllers
             HttpResponseMessage response = await client.PostAsync(fullUrl, content);
             if (!response.IsSuccessStatusCode)
             {
-                //return RedirectToAction("index", "Home");
+                return RedirectToAction("Index", "Home");
             }
             return RedirectToAction("Details", new { animalId = vm.NewMealPlan.AnimalId });
         }
@@ -289,7 +280,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    error = ex.Message;
                 }
             }
 
@@ -303,10 +294,7 @@ namespace SmartShelter_Web.Controllers
             var client = _tokenService.CreateHttpClient();
             string fullUrl = $"{GlobalVariables.backendAddress}/api/Aviary/change?animalId={animalId}&newAviaryId={selectedAviary}";
             HttpResponseMessage response = await client.PutAsync(fullUrl, null);
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
+            
             return RedirectToAction("Details", new { animalId = animalId });
 
         }
@@ -350,7 +338,7 @@ namespace SmartShelter_Web.Controllers
 
         public async Task<IActionResult> UpdateAviary(Aviary aviary)
         {
-            //aviary.AviaryCondition = null;
+            
             var client = _tokenService.CreateHttpClient();
             string fullUrl = $"{GlobalVariables.backendAddress}/api/Aviary/update";
             JsonSerializerOptions options = new JsonSerializerOptions
@@ -360,12 +348,6 @@ namespace SmartShelter_Web.Controllers
             string json = JsonSerializer.Serialize(aviary, options);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(fullUrl, content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
-
             return RedirectToAction("Details", new { animalId = aviary.AnimalId });
         }
 
@@ -390,7 +372,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    error = ex.Message;
                 }
             }
             
@@ -412,11 +394,7 @@ namespace SmartShelter_Web.Controllers
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PutAsync(fullUrl, content);
 
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
-
+            
             return RedirectToAction("Details", new { animalId = vm.Animal.Id });
         }
 
@@ -433,10 +411,7 @@ namespace SmartShelter_Web.Controllers
             string json = JsonSerializer.Serialize(vm.NewDisease, options);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(fullUrl, content);
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
+            
             return RedirectToAction("Details", new { animalId = vm.NewDisease.AnimalId });
 
         }
@@ -463,7 +438,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    error = ex.Message;
                 }
             }
             

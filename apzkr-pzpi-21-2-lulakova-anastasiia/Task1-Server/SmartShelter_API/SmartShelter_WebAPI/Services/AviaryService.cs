@@ -102,7 +102,6 @@ namespace SmartShelter_WebAPI.Services
         {
             var addedCondition = _dbContext.Add(condition);
             _dbContext.SaveChanges();
-            //addedCondition.State = EntityState.Detached;
             var aviary = _dbContext.Aviaries.FirstOrDefault(x => x.Id == aviaryId);
             if (aviary != null && aviary.AviaryConditionId == null)
             {
@@ -358,11 +357,11 @@ namespace SmartShelter_WebAPI.Services
             
             string header = $"Aviary {sensor.Aviary.Id} has high heat stress index\n";
             string message = CheckIhs(ihs);
-            //var user = _context.Users.FirstOrDefault(u => u.Id == sensor.Plant.UserId);
-            //if (user != null)
-            //{
-                return SendEmail("n@gmail.com", message, header);
-            //}
+            var user = _dbContext.Users.FirstOrDefault(u => u.Id == sensor.Aviary.Id.ToString());
+            if (user != null)
+            {
+                return SendEmail(user.Email, message, header);
+            }
 
             return false;
         }

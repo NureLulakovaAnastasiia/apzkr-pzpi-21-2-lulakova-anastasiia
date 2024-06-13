@@ -10,7 +10,7 @@ namespace SmartShelter_Web.Controllers
     public class StaffController : Controller
     {
         private readonly ITokenService _tokenService;
-
+        public string error = "";
         public StaffController(ITokenService tokenService)
         {
             _tokenService = tokenService;
@@ -18,11 +18,13 @@ namespace SmartShelter_Web.Controllers
         public async Task<IActionResult> Index()
         {
             var staff = await GetAllStaff();
+            ViewData["error"] = error;
             return View(staff);
         }
         public async Task<IActionResult> StaffDetails(int staffId)
         {
             var staff = await GetStaffById(staffId);
+            ViewData["error"] = error;
             return View(staff);
         }
         public async Task<List<StaffDto>> GetAllStaff()
@@ -46,7 +48,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    error = ex.Message;
                 }
             }
             return staff;
@@ -73,7 +75,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    error = ex.Message;
                 }
             }
             return staff;
@@ -100,10 +102,7 @@ namespace SmartShelter_Web.Controllers
                     fullUrl = $"{GlobalVariables.backendAddress}/api/Staff/addRole?roleName={selectedRole}&staffId={vm.Staff.Id}";
                     content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
                     response = await client.PutAsync(fullUrl, null);
-                    if(response.IsSuccessStatusCode)
-                    {
-
-                    }
+                   
                 }
             }
 

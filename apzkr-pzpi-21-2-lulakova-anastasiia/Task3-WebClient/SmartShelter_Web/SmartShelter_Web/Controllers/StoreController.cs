@@ -11,6 +11,7 @@ namespace SmartShelter_Web.Controllers
     public class StoreController : Controller
     {
         private readonly ITokenService _tokenService;
+        public string error = "";
         public StoreController(ITokenService tokenService)
         {
             _tokenService = tokenService;
@@ -20,6 +21,7 @@ namespace SmartShelter_Web.Controllers
             var list = await GetFullStorage();
             var groupedList = GetGroupedStorage(list);
             var orders = await GetAllOrders();
+            ViewData["error"] = error;
             orders.Sort(
                 (a, b) =>
                 {
@@ -54,7 +56,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    error = ex.Message;
                 }
             }
             if (list.Count > 0)
@@ -122,10 +124,7 @@ namespace SmartShelter_Web.Controllers
             string json = JsonSerializer.Serialize(vm.NewOrder, options);
             var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
             HttpResponseMessage response = await client.PostAsync(fullUrl, content);
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
+             
             return RedirectToAction("Index");
         }
 
@@ -150,7 +149,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 catch (Exception ex)
                 {
-
+                    error = ex.Message;
                 }
             }
             if (list.Count > 0)
@@ -176,10 +175,7 @@ namespace SmartShelter_Web.Controllers
             var client = _tokenService.CreateHttpClient();
             string fullUrl = $"{GlobalVariables.backendAddress}/api/Storage/approve/{orderId}";
             HttpResponseMessage response = await client.PostAsync(fullUrl, null);
-            if (response.IsSuccessStatusCode)
-            {
-                //return RedirectToAction("Details", animal.Id);
-            }
+             
             return RedirectToAction("Index");
         }
     }

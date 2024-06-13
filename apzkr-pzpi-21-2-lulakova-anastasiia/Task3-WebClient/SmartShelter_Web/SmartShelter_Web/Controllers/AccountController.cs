@@ -19,7 +19,7 @@ namespace SmartShelter_Web.Controllers
     public class AccountController : Controller
     {
         private readonly ITokenService _tokenService;
-
+        public string error = "";
         public AccountController(ITokenService tokenService)
         {
             _tokenService = tokenService;
@@ -168,24 +168,7 @@ namespace SmartShelter_Web.Controllers
                 }
                 else
                 {
-                    switch (response.StatusCode)
-                    {
-                        case HttpStatusCode.BadRequest:
-                            error = "BadRequest";
-                            break;
-                        case HttpStatusCode.InternalServerError:
-                            error = "InternalServerError";
-                            break;
-                        case HttpStatusCode.NotFound:
-                            error = "NoObject";
-                            break;
-                        case HttpStatusCode.UnprocessableEntity:
-                            error = "NoUser";
-                            break;
-                        default:
-                            error = "Default";
-                            break;
-                    }
+                    error = response.StatusCode.ToString();
                 }
                 return error;
             }

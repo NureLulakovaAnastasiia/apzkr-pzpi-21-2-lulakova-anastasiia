@@ -47,17 +47,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
-//var supportedCultures = new[] { "en-US", "uk" };
-//var localizationOptions = new RequestLocalizationOptions()
-//    .SetDefaultCulture(supportedCultures[0])
-//    .AddSupportedCultures(supportedCultures)
-//    .AddSupportedUICultures(supportedCultures);
 
-//app.UseRequestLocalization(localizationOptions);
 
 app.MapControllerRoute(
     name: "default",
-    //pattern: "{controller=Animal}/{action=Index}/{id?}");
 pattern: "{controller=Account}/{action=Login}/{id?}");
 app.MapRazorPages();
 
