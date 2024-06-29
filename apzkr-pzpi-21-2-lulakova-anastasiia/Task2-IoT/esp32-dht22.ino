@@ -15,10 +15,10 @@ String Password = "";
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org");
 String UTCTime = "";
-String serverAddress = "https://smartshelterapi.azurewebsites.net";
+String serverAddress = "";
 const int sensorId = 1;
-int DHT_PIN = 15;
-const int DHT_PIN_Hum = 18;
+int DHT_PIN = 18;
+const int DHT_PIN_Hum = 19;
 const int NTC_PIN = 39;
 const int FOOD_PIN = 35;
 const int WATER_PIN = 34;
@@ -43,7 +43,9 @@ DHTesp dhtSensor;
 
 
 void setup() {
-  Serial.begin(9600);
+
+  Serial.begin(115200);
+  pinMode(DHT_PIN_Hum, INPUT);
 
   if(digitalRead(DHT_PIN_Hum) == HIGH){
     analogReadResolution(10);
@@ -52,9 +54,9 @@ void setup() {
     DHT_PIN = DHT_PIN_Hum;
     Serial.println("NTC is connected!");
   }
+ 
   dhtSensor.setup(DHT_PIN, DHTesp::DHT22);
-  
-  Serial.begin(115200);
+  Serial.println("DHT is connected!");
   pinMode(WATER_PIN, INPUT);
   pinMode(FOOD_PIN, INPUT);
   Serial.print("Connecting to WiFi");
